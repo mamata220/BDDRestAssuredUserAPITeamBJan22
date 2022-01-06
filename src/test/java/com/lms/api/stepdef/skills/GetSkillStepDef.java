@@ -1,5 +1,5 @@
 package com.lms.api.stepdef.skills;
-/*@author:Tejaswi*/
+/**@author:Tejaswi**/
 
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
