@@ -151,17 +151,12 @@
 			<version>2.8.1</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 		<!-- Below is required to do DB Validation -->
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
+			<version>42.3.1</version>
 		</dependency>
-
-
 	</dependencies>
-
-
-
 </project>
