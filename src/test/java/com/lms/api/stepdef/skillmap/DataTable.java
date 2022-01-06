@@ -1,13 +1,16 @@
-package StepDefinitionUser;
-
+package com.lms.api.stepdef.skillmap;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class DataTable {
 	String path;
@@ -27,10 +30,10 @@ public class DataTable {
 	public void createConnection(String sheetName) throws Exception {
 		File file = new File(path);
 		fis = new FileInputStream(file);
-		workbook = new HSSFWorkbook(fis);
+		workbook = new XSSFWorkbook(fis);
 		//sheet = workbook.getSheetAt(0);
 		sheet = workbook.getSheet(sheetName);
-		
+
 	}
 
 	public String getDataFromExcel(String rowName, String colName) throws IOException {
@@ -63,10 +66,9 @@ public class DataTable {
 			
 		}*/
 		
-		//System.out.println("RowNum " + dataRowNum + "CellNum " + dataRowNum );
 		String body =  sheet.getRow(dataRowNum).getCell(dataColNum).getStringCellValue();
-		fis.close(); 
+		fis.close();
 		return body;
 	}
-	
+
 }

@@ -1,4 +1,4 @@
-package cucumberrunner;
+package com.lms.api.cucumberrunner;
 
 import org.junit.runner.RunWith;
 
@@ -7,7 +7,7 @@ import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "src/test/resources/features/",
-					 glue = {"StepDefinitionUser", "StepDefinitionUserSkillMap"},
+					 glue = {"com/lms/api/stepdef/user", "com/lms/api/stepdef/skillmap", "com/lms/api/stepdef/skills"},
 					// tags = "@blank",
 monochrome=true,
 dryRun = false,

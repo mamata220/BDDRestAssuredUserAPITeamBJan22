@@ -1,4 +1,4 @@
-package StepDefinitionUser;
+package com.lms.api.stepdef.user;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.hamcrest.MatcherAssert.assertThat;

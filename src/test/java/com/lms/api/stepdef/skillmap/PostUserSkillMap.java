@@ -1,13 +1,7 @@
-package StepDefinitionUserSkillMap;
-import java.io.FileInputStream;
+package com.lms.api.stepdef.skillmap;
 import java.io.IOException;
-import java.util.Properties;
 
 import org.testng.Assert;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
@@ -15,7 +9,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
-import io.restassured.http.Method;
 import io.restassured.module.jsv.JsonSchemaValidationException;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;

@@ -1,12 +1,7 @@
-package StepDefinitionUserSkillMap;
-import java.io.FileInputStream;
+package com.lms.api.stepdef.skillmap;
 import java.io.IOException;
-import java.util.Properties;
 
 import org.testng.Assert;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
@@ -17,7 +12,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DeleteUserSkillMap extends BaseClass {

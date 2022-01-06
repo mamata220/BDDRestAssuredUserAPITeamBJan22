@@ -1,4 +1,4 @@
-package StepDefinitionUser;
+package com.lms.api.stepdef.user;
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,4 +1,4 @@
-package StepDefinitionUser;
+package com.lms.api.stepdef.user;
 import java.io.FileInputStream;
 import java.util.Properties;
 
