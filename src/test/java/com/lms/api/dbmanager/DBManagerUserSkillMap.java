@@ -16,7 +16,7 @@ public class DBManagerUserSkillMap {
 	
 	String url = "jdbc:postgresql://localhost:5432/LMS_DB1";
     String user = "postgres";
-    String password = "060581pm01PM";
+    String password = "*****";
     Statement stmt;
     Connection con;
     ResultSet rs;
