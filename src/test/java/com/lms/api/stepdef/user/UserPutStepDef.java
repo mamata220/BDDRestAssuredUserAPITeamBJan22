@@ -30,7 +30,7 @@ public class UserPutStepDef extends TestBase {
 	@Before
 	public void initializeDataTable(Scenario scenario) throws Exception {
 		this.scenario = scenario;
-		sheetPut = LoadProperties().getProperty("sheetPut");
+		sheetPut = loadProperties().getProperty("sheetPut");
 		// System.out.println(sheetPost);
 		dataTable = new DataTable("src/test/resources/excel/data.xls");
 		dataTable.createConnection(sheetPut);
@@ -50,12 +50,12 @@ public class UserPutStepDef extends TestBase {
 	@Given("^User is on Put Method with endpoint")
 	public void user_is_on_put_method_with_endpoint() throws IOException {
 
-		RestAssured.baseURI = LoadProperties().getProperty("base_uri");
-		RequestSpec = RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
-				LoadProperties().getProperty("password"));
+		RestAssured.baseURI = loadProperties().getProperty("base_uri");
+		RequestSpec = RestAssured.given().auth().preemptive().basic(loadProperties().getProperty("username"),
+				loadProperties().getProperty("password"));
 
 		String userId = dataTable.getDataFromExcel(scenario.getName(), "UserId");
-		path = LoadProperties().getProperty("endpointGet") + userId;
+		path = loadProperties().getProperty("endpointGet") + userId;
 		// System.out.println(path);
 
 	}

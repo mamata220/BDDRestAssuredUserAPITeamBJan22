@@ -30,8 +30,7 @@ public class UserGetStepDef extends TestBase {
 	@Before
 	public void initializeDataTable(Scenario scenario) throws Exception {
 		this.scenario = scenario;
-		sheetGet = LoadProperties().getProperty("sheetGet");
-		// System.out.println(sheetPost);
+		sheetGet = loadProperties().getProperty("sheetGet");
 		dataTable = new DataTable("src/test/resources/excel/data.xls");
 		dataTable.createConnection(sheetGet);
 
@@ -42,32 +41,26 @@ public class UserGetStepDef extends TestBase {
 
 	@Given("User is on Get Method with end point")
 	public void user_is_on_get_method_with_end_point() throws IOException {
-		RestAssured.baseURI = LoadProperties().getProperty("base_uri");
-		// RequestSpec =
-		// RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
-		// LoadProperties().getProperty("password"));
+		RestAssured.baseURI = loadProperties().getProperty("base_uri");
 		String ex_username = dataTable.getDataFromExcel(scenario.getName(), "Username");
 		String ex_password = dataTable.getDataFromExcel(scenario.getName(), "Password");
 
 		RequestSpec = RestAssured.given().auth().preemptive().basic(ex_username, ex_password);
-		// String userId = dataTable.getDataFromExcel(scenario.getName(), "UserId");
-
-		// path = LoadProperties().getProperty("endpoint") + userId;
-		path = LoadProperties().getProperty("endpoint");
+		path = loadProperties().getProperty("endpoint");
 
 	}
 
 	@Given("User is on Get Method with end point and no authentication")
 	public void user_is_on_get_method_with_end_point_and_no_authentication() {
-		RestAssured.baseURI = LoadProperties().getProperty("base_uri");
+		RestAssured.baseURI = loadProperties().getProperty("base_uri");
 		RequestSpec = RestAssured.given();
-		path = LoadProperties().getProperty("endpoint");
+		path = loadProperties().getProperty("endpoint");
 	}
 
 	@Then("User should receive error status code for get")
 	public void user_should_receive_error_status_code_for_get() {
 		String responseBody = response.prettyPrint();
-		assertEquals(Integer.parseInt(LoadProperties().getProperty("invStatusCode")), response.statusCode());
+		assertEquals(Integer.parseInt(loadProperties().getProperty("invStatusCode")), response.statusCode());
 
 		System.out.println("Response Status code is =>  " + response.statusCode());
 		System.out.println("Response Body is => " + responseBody);
@@ -81,7 +74,7 @@ public class UserGetStepDef extends TestBase {
 	@Then("User should receive error status code for auth")
 	public void user_should_receive_error_status_code_for_auth() {
 		String responseBody = response.prettyPrint();
-		assertEquals(Integer.parseInt(LoadProperties().getProperty("authStatusCode")), response.statusCode());
+		assertEquals(Integer.parseInt(loadProperties().getProperty("authStatusCode")), response.statusCode());
 
 		System.out.println("Response Status code is =>  " + response.statusCode());
 		System.out.println("Response Body is => " + responseBody);
@@ -120,18 +113,6 @@ public class UserGetStepDef extends TestBase {
 		//System.out.println("Response Body is => " + responseBody);
 	}
 	
-/*	@Then("User should receive status code and message for post")
-	public void user_should_receive_status_code_and_message_for_post() throws Exception {
-		String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
-
-		int code = response.getStatusCode();
-		String responseBody = response.prettyPrint();
-		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
-		
-		System.out.println("Response Status code is =>  " + response.statusCode());
-		//System.out.println("Response Body is => " + responseBody);
-	}
-*/
 	@When("User sends incorrect username and correct password")
 	public void user_sends_incorrect_username_and_correct_password() {
 		requestSpecification();
@@ -139,10 +120,7 @@ public class UserGetStepDef extends TestBase {
 
 	@Given("User is on Get Method with end point for single user")
 	public void user_is_on_get_method_with_end_point_for_single_user() throws IOException {
-		RestAssured.baseURI = LoadProperties().getProperty("base_uri");
-		// RequestSpec =
-		// RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
-		// LoadProperties().getProperty("password"));
+		RestAssured.baseURI = loadProperties().getProperty("base_uri");
 		String ex_username = dataTable.getDataFromExcel(scenario.getName(), "Username");
 		String ex_password = dataTable.getDataFromExcel(scenario.getName(), "Password");
 
@@ -151,12 +129,12 @@ public class UserGetStepDef extends TestBase {
 
 		if (userId.equalsIgnoreCase("000")) {
 			int invUserid = Integer.parseInt(userId);
-			path = LoadProperties().getProperty("endpointGet") + invUserid;
+			path = loadProperties().getProperty("endpointGet") + invUserid;
 		} else if (userId.equalsIgnoreCase("1.23")) {
 			float invid = Float.parseFloat(userId);
-			path = LoadProperties().getProperty("endpointGet") + invid;
+			path = loadProperties().getProperty("endpointGet") + invid;
 		} else
-			path = LoadProperties().getProperty("endpointGet") + userId;
+			path = loadProperties().getProperty("endpointGet") + userId;
 
 	}
 
@@ -190,10 +168,10 @@ public class UserGetStepDef extends TestBase {
 
 	@Given("User is on Get Method with end point with userID as blank")
 	public void user_is_on_get_method_with_end_point_with_user_id_as_blank() {
-		RestAssured.baseURI = LoadProperties().getProperty("base_uri");
-		RequestSpec = RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
-				LoadProperties().getProperty("password"));
-		path = LoadProperties().getProperty("endpointGet");
+		RestAssured.baseURI = loadProperties().getProperty("base_uri");
+		RequestSpec = RestAssured.given().auth().preemptive().basic(loadProperties().getProperty("username"),
+				loadProperties().getProperty("password"));
+		path = loadProperties().getProperty("endpointGet");
 	}
 
 	@When("User sends request with a blank userId")
@@ -215,10 +193,6 @@ public class UserGetStepDef extends TestBase {
 
 		RequestSpec.header("Accept", ContentType.JSON.getAcceptHeader()).contentType(ContentType.JSON);
 		RequestSpec.log().all();
-
-		// Validation of requestBody with User schema
-		// assertThat(pbodyExcel, matchesJsonSchemaInClasspath("put_schema.json"));
-
 		response = RequestSpec.when().get(path);
 	}
 

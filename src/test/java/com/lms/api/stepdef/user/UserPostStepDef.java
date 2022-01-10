@@ -32,7 +32,7 @@ public class UserPostStepDef extends TestBase {
 	@Before
 	public void initializeDataTable(Scenario scenario) throws Exception {
 		this.scenario = scenario;
-		sheetPost=LoadProperties().getProperty("sheetPost");
+		sheetPost=loadProperties().getProperty("sheetPost");
 	//	System.out.println(sheetPost);
 		dataTable = new DataTable("src/test/resources/excel/data.xls");
 		dataTable.createConnection(sheetPost);
@@ -60,14 +60,14 @@ public class UserPostStepDef extends TestBase {
 		 */
 
 		// RestAssured.baseURI= (String) prop.get("base_uri");
-		RestAssured.baseURI = LoadProperties().getProperty("base_uri");
+		RestAssured.baseURI = loadProperties().getProperty("base_uri");
 
-		RequestSpec = RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
-				LoadProperties().getProperty("password"));
+		RequestSpec = RestAssured.given().auth().preemptive().basic(loadProperties().getProperty("username"),
+				loadProperties().getProperty("password"));
 		// RequestSpec = RestAssured.given().auth().preemptive().basic("username",
 		// "password");
 		
-		path = LoadProperties().getProperty("endpointPost");
+		path = loadProperties().getProperty("endpointPost");
 
 		// response = RequestSpec.given().when().get(path);
 		// System.out.println(response.asString());
