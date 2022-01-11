@@ -9,6 +9,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+/**
+ * This class is a utility class and is used to Read Excel sheet
+ */
 public class DataTable {
 	
 	String path;

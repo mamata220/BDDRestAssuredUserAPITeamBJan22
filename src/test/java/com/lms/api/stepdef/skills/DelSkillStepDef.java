@@ -44,12 +44,12 @@ public class DelSkillStepDef extends TestBase{
 	
 	@Given("User is on DELETE method with endpoint")
 	public void user_is_on_delete_method_with_endpoint() throws IOException {
-		RestAssured.baseURI=LoadProperties().getProperty("base_uri");
-		requestSpec=RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
+		RestAssured.baseURI = LoadProperties().getProperty("base_uri");
+		requestSpec = RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
 				    LoadProperties().getProperty("password"));
-		String skill_id=dataTable.getDataFromExcel(scenario.getName(),"Skill_id"); 
+		String skill_id = dataTable.getDataFromExcel(scenario.getName(),"Skill_id");
 		System.out.println("SkillId is : " +skill_id);
-		path=LoadProperties().getProperty("endpointDelete") + skill_id;
+		path = LoadProperties().getProperty("endpointDelete") + skill_id;
 		System.out.println("Path for Delete is "+ path);
 		
 	}
