@@ -6,9 +6,9 @@ import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "src/test/resources/features/UserPost.feature",
+@CucumberOptions(features = "src/test/resources/features/UserDelete.feature",
 					 glue = {"com/lms/api/stepdef/user"},
-					 tags = "@post",
+					 //tags = "@post",
 monochrome=true,
 dryRun = false
 /*plugin = {"pretty","html:target/HtmlReports1/report.html",

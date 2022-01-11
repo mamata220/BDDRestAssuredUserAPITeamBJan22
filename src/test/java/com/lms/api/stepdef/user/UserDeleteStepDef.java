@@ -28,7 +28,7 @@ public class UserDeleteStepDef extends TestBase{
 	@Before
 	public void initializeDataTable(Scenario scenario) throws Exception {
 		this.scenario = scenario;
-		sheetDelete = LoadProperties().getProperty("sheetDelete");
+		sheetDelete = loadProperties().getProperty("sheetDelete");
 		// System.out.println(sheetPost);
 		dataTable = new DataTable("src/test/resources/excel/data.xls");
 		dataTable.createConnection(sheetDelete);
@@ -46,13 +46,13 @@ public class UserDeleteStepDef extends TestBase{
 	
 	@Given("User is on Delete Method with endpoint")
 	public void user_is_on_delete_method_with_endpoint() throws IOException {
-		RestAssured.baseURI = LoadProperties().getProperty("base_uri");
-		RequestSpec = RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
-				LoadProperties().getProperty("password"));
+		RestAssured.baseURI = loadProperties().getProperty("base_uri");
+		RequestSpec = RestAssured.given().auth().preemptive().basic(loadProperties().getProperty("username"),
+				loadProperties().getProperty("password"));
 
 		String userId = dataTable.getDataFromExcel(scenario.getName(), "UserId");
 		System.out.println("UserId is : " + userId);
-		path = LoadProperties().getProperty("endpointDelete") + userId;
+		path = loadProperties().getProperty("endpointDelete") + userId;
 		System.out.println("Path for Delete is: " + path);
 	}
 	
@@ -96,11 +96,11 @@ public class UserDeleteStepDef extends TestBase{
 	
 	@Given("User is on Delete Method with endpoint without userid as parameter")
 	public void user_is_on_delete_method_with_endpoint_without_userid_as_parameter() {
-		RestAssured.baseURI = LoadProperties().getProperty("base_uri");
-		RequestSpec = RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
-				LoadProperties().getProperty("password"));
+		RestAssured.baseURI = loadProperties().getProperty("base_uri");
+		RequestSpec = RestAssured.given().auth().preemptive().basic(loadProperties().getProperty("username"),
+				loadProperties().getProperty("password"));
 
-		path = LoadProperties().getProperty("endpointDelete");
+		path = loadProperties().getProperty("endpointDelete");
 		
 	}
 	

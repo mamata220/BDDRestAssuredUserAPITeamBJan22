@@ -4,7 +4,7 @@ import java.util.Properties;
 
 public class TestBase {
 	FileInputStream  fis;
-	public Properties LoadProperties() {
+	public Properties loadProperties() {
 		try {
 		//InputStream inStream = getClass().getClassLoader().getResourceAsStream("user.properties");
 		fis = new FileInputStream("src/test/resources/properties/user.properties");
