@@ -1,6 +1,9 @@
 package com.lms.api.stepdef.skillmap;
 import java.io.IOException;
+import java.util.Properties;
 
+import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.PropertiesReaderUtil;
 import org.testng.Assert;
 
 import io.cucumber.java.Before;
@@ -15,9 +18,7 @@ import io.restassured.specification.RequestSpecification;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class DeleteUserSkillMap extends BaseClass {
-	
-	
+public class UserSkillMapDeleteStepDef {
 
 	RequestSpecification RequestSpec;
 	Response response;
@@ -25,8 +26,15 @@ public class DeleteUserSkillMap extends BaseClass {
 	String path;
 	String sheetDelete;
 
-	DataTable dataTable;
+	ExcelSheetReaderUtil excelSheetReaderUtil;
 	Scenario scenario;
+
+	Properties properties;
+
+	public UserSkillMapDeleteStepDef() {
+		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
+		properties = propUtil.loadProperties();
+	}
 
 	// Before annotation from io cucumber
 	// Scenario class will give us information at the runtime like the scenario
@@ -34,9 +42,9 @@ public class DeleteUserSkillMap extends BaseClass {
 	@Before
 	public void initializeDataTable(Scenario scenario) throws Exception {
 		this.scenario = scenario;
-		sheetDelete = LoadProperties().getProperty("sheetDelete");
-		dataTable = new DataTable("src/test/resources/excel/data_UserSkillMap.xls");
-		dataTable.createConnection(sheetDelete);
+		sheetDelete = properties.getProperty("sheetDelete");
+		excelSheetReaderUtil = new ExcelSheetReaderUtil("src/test/resources/excel/data_UserSkillMap.xls");
+		excelSheetReaderUtil.readSheet(sheetDelete);
 
 	}
 	
@@ -45,10 +53,10 @@ public class DeleteUserSkillMap extends BaseClass {
 	@Given("User is on DELETE Method")
 	public void user_is_on_delete_method() {
 		
-		RestAssured.baseURI = LoadProperties().getProperty("base_uri");
+		RestAssured.baseURI = properties.getProperty("base_uri");
 
-		RequestSpec = RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
-				LoadProperties().getProperty("password"));
+		RequestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
+				properties.getProperty("password"));
 		// RequestSpec = RestAssured.given().auth().preemptive().basic("username","password");
 
 		path = "/UserSkills/";
@@ -66,8 +74,8 @@ public class DeleteUserSkillMap extends BaseClass {
 	@Then("User gets Response")
 	public void user_gets_response() throws IOException {
 		
-		String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
-		String expMessage = dataTable.getDataFromExcel(scenario.getName(), "Message");
+		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
+		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 		System.out.println("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
 		
 	    System.out.println("Response Status code is =>  " + response.statusCode());
@@ -107,7 +115,7 @@ public class DeleteUserSkillMap extends BaseClass {
 
 	public void requestSpecificationDelete() throws IOException {
 		
-		String UserSkillsId = dataTable.getDataFromExcel(scenario.getName(), "UserSkills");
+		String UserSkillsId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserSkills");
 			
 			//response = RequestSpec.get(path);
 		    RequestSpec.log().all();

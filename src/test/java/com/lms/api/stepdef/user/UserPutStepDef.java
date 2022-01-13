@@ -5,7 +5,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Properties;
 
+import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.PropertiesReaderUtil;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
@@ -16,7 +19,7 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-public class UserPutStepDef extends TestBase {
+public class UserPutStepDef {
 
 	RequestSpecification RequestSpec;
 	Response response;
@@ -24,16 +27,22 @@ public class UserPutStepDef extends TestBase {
 	String path;
 	String sheetPut;
 
-	DataTable dataTable;
+	ExcelSheetReaderUtil excelSheetReaderUtil;
 	Scenario scenario;
+	Properties properties;
+
+	public UserPutStepDef() {
+		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
+		properties = propUtil.loadProperties();
+	}
 
 	@Before
 	public void initializeDataTable(Scenario scenario) throws Exception {
 		this.scenario = scenario;
-		sheetPut = loadProperties().getProperty("sheetPut");
+		sheetPut = properties.getProperty("sheetPut");
 		// System.out.println(sheetPost);
-		dataTable = new DataTable("src/test/resources/excel/data.xls");
-		dataTable.createConnection(sheetPut);
+		excelSheetReaderUtil = new ExcelSheetReaderUtil(properties.getProperty("userapi.tdd.excelsheet.file.path"));
+		excelSheetReaderUtil.readSheet(sheetPut);
 
 	}
 
@@ -50,27 +59,27 @@ public class UserPutStepDef extends TestBase {
 	@Given("^User is on Put Method with endpoint")
 	public void user_is_on_put_method_with_endpoint() throws IOException {
 
-		RestAssured.baseURI = loadProperties().getProperty("base_uri");
-		RequestSpec = RestAssured.given().auth().preemptive().basic(loadProperties().getProperty("username"),
-				loadProperties().getProperty("password"));
+		RestAssured.baseURI = properties.getProperty("base_uri");
+		RequestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
+				properties.getProperty("password"));
 
-		String userId = dataTable.getDataFromExcel(scenario.getName(), "UserId");
-		path = loadProperties().getProperty("endpointGet") + userId;
+		String userId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserId");
+		path = properties.getProperty("endpointGet") + userId;
 		// System.out.println(path);
 
 	}
 
 	@When("User sends request to update user name with valid input")
 	public void user_sends_request_to_update_user_name_with_valid_input() throws IOException {
-		String bodyExcel = dataTable.getDataFromExcel(scenario.getName(), "Body");
+		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		requestSpecification(bodyExcel);
 
 	}
 
 	@Then("User should receive status code and message for put")
 	public void user_should_receive_status_code_and_message_for_put() throws Exception {
-		String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
-		String expMessage = dataTable.getDataFromExcel(scenario.getName(), "Message");
+		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
+		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 		System.out.println("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
 
 		String responseBody = response.prettyPrint();
@@ -86,9 +95,9 @@ public class UserPutStepDef extends TestBase {
 	/*
 	 * @Then("Validate response for status code and message for put") public void
 	 * validate_response_for_status_code_and_message_for_put() throws IOException {
-	 * String expStatusCode = dataTable.getDataFromExcel(scenario.getName(),
+	 * String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(),
 	 * "StatusCode"); String expMessage =
-	 * dataTable.getDataFromExcel(scenario.getName(), "Message");
+	 * excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 	 * System.out.println("Expected response code: " + expStatusCode +
 	 * "Expected message is: " + expMessage);
 	 * 
@@ -105,25 +114,25 @@ public class UserPutStepDef extends TestBase {
 
 	@When("User sends request to update user name with alphanumeric input")
 	public void user_sends_request_to_update_user_name_with_alphanumeric_input() throws IOException {
-		String bodyExcel = dataTable.getDataFromExcel(scenario.getName(), "Body");
+		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		requestSpecification(bodyExcel);
 	}
 
 	@When("User sends request to update phone number with invalid input")
 	public void user_sends_request_to_update_phone_number_with_invalid_input() throws IOException {
-		String bodyExcel = dataTable.getDataFromExcel(scenario.getName(), "Body");
+		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		requestSpecification(bodyExcel);
 	}
 
 	@When("User sends request to update location and comments with alphanumeric input.")
 	public void user_sends_request_to_update_location_and_comments_with_alphanumeric_input() throws IOException {
-		String bodyExcel = dataTable.getDataFromExcel(scenario.getName(), "Body");
+		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		requestSpecification(bodyExcel);
 	}
 
 	@When("User sends request to update time zone with valid input")
 	public void user_sends_request_to_update_time_zone_with_valid_input() throws IOException {
-		String bodyExcel = dataTable.getDataFromExcel(scenario.getName(), "Body");
+		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		requestSpecification(bodyExcel);
 
 		/*
@@ -138,26 +147,26 @@ public class UserPutStepDef extends TestBase {
 
 	@When("User sends request to update time zone with invalid input")
 	public void user_sends_request_to_update_time_zone_with_invalid_input() throws IOException {
-		String bodyExcel = dataTable.getDataFromExcel(scenario.getName(), "Body");
+		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		requestSpecification(bodyExcel);
 	}
 
 	@When("User sends request to update Linkedin id with valid input")
 	public void user_sends_request_to_update_linkedin_id_with_valid_input() throws IOException {
-		String bodyExcel = dataTable.getDataFromExcel(scenario.getName(), "Body");
+		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		requestSpecification(bodyExcel);
 	}
 
 	@When("user sends request to update visa status with numeric input")
 	public void user_sends_request_to_update_visa_status_with_numeric_input() throws IOException {
-		String bodyExcel = dataTable.getDataFromExcel(scenario.getName(), "Body");
+		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		requestSpecification(bodyExcel);
 	}
 
 	@Then("User should receive error status code and message for put")
 	public void user_should_receive_error_status_code_and_message_for_put() throws Exception {
-		String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
-		String expMessage = dataTable.getDataFromExcel(scenario.getName(), "Message");
+		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
+		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 		System.out.println("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
 
 		String responseBody = response.prettyPrint();

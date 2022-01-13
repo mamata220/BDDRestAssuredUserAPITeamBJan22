@@ -1,6 +1,9 @@
 package com.lms.api.stepdef.skillmap;
 import java.io.IOException;
+import java.util.Properties;
 
+import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.PropertiesReaderUtil;
 import org.testng.Assert;
 
 import io.cucumber.java.Before;
@@ -16,7 +19,7 @@ import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInC
 import static org.hamcrest.MatcherAssert.assertThat;
 
 
-public class PutUserSkillMap extends BaseClass {
+public class UserSkillMapPutStepDef {
 	
 	RequestSpecification RequestSpec;
 	Response response;
@@ -24,8 +27,14 @@ public class PutUserSkillMap extends BaseClass {
 	String path;
 	String sheetPut;
 
-	DataTable dataTable;
+	ExcelSheetReaderUtil excelSheetReaderUtil;
 	Scenario scenario;
+	Properties properties;
+
+	public UserSkillMapPutStepDef() {
+		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
+		properties = propUtil.loadProperties();
+	}
 
 	// Before annotation from io cucumber
 	// Scenario class will give us information at the runtime like the scenario
@@ -33,19 +42,19 @@ public class PutUserSkillMap extends BaseClass {
 	@Before
 	public void initializeDataTable(Scenario scenario) throws Exception {
 		this.scenario = scenario;
-		sheetPut = LoadProperties().getProperty("sheetPut");
-		dataTable = new DataTable("src/test/resources/excel/data_UserSkillMap.xls");
-		dataTable.createConnection(sheetPut);
+		sheetPut = properties.getProperty("sheetPut");
+		excelSheetReaderUtil = new ExcelSheetReaderUtil("src/test/resources/excel/data_UserSkillMap.xls");
+		excelSheetReaderUtil.readSheet(sheetPut);
 
 	}
 	
 	
 	@Given("User is on Put Method")
 	public void user_is_on_put_method() {
-		RestAssured.baseURI = LoadProperties().getProperty("base_uri");
+		RestAssured.baseURI = properties.getProperty("base_uri");
 
-		RequestSpec = RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
-				LoadProperties().getProperty("password"));
+		RequestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
+				properties.getProperty("password"));
 		// RequestSpec = RestAssured.given().auth().preemptive().basic("username","password");
 
 		path = "/SkillsMap/";
@@ -54,8 +63,8 @@ public class PutUserSkillMap extends BaseClass {
 	@When("User sends request with input as valid User_skill_Id")
 	public void user_sends_request_with_input_as_valid_user_skill_id() throws IOException {
 		
-		String UserSkillsId = dataTable.getDataFromExcel(scenario.getName(), "UserSkills");
-		String bodyExcel = dataTable.getDataFromExcel(scenario.getName(), "Body");
+		String UserSkillsId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserSkills");
+		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		RequestSpec.header("Content-Type", "application/json");
 		RequestSpec.body(bodyExcel).log().all();
 
@@ -75,8 +84,8 @@ public class PutUserSkillMap extends BaseClass {
 	@Then("User should receive valid status code")
 	public void user_should_receive_valid_status_code() throws IOException {
 		
-		String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
-		String expMessage = dataTable.getDataFromExcel(scenario.getName(), "Message");
+		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
+		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 		System.out.println("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
 		
 	    System.out.println("Response Status code is =>  " + response.statusCode());
@@ -112,8 +121,8 @@ public class PutUserSkillMap extends BaseClass {
 	
 	public void requestSpecificationPut() throws IOException {
 		
-		String UserSkillsId = dataTable.getDataFromExcel(scenario.getName(), "UserSkills");
-		String bodyExcel = dataTable.getDataFromExcel(scenario.getName(), "Body");
+		String UserSkillsId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserSkills");
+		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		RequestSpec.header("Content-Type", "application/json");
 		RequestSpec.body(bodyExcel).log().all();
 		
@@ -124,8 +133,8 @@ public class PutUserSkillMap extends BaseClass {
 	@Then("User should receive Bad Requests")
 	public void user_should_receive_bad_requests() throws IOException {
 		
-		String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
-		String expMessage = dataTable.getDataFromExcel(scenario.getName(), "Message");
+		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
+		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 		System.out.println("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
 		
 	    System.out.println("Response Status code is =>  " + response.statusCode());

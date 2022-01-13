@@ -7,7 +7,7 @@ import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-			features = {"src/test/resources/Feature/PutSkill.feature"},
+			features = {"src/test/resources/Feature/SkillPut.feature"},
 			glue = {"com.lms.api.skill.stepdef"},
 			tags="@check",
 			monochrome = true,

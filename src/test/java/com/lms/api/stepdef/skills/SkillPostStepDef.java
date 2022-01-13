@@ -2,7 +2,11 @@ package com.lms.api.stepdef.skills;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Properties;
 
+import com.lms.api.dbmanager.Dbmanager;
+import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.PropertiesReaderUtil;
 import org.json.JSONObject;
 
 import io.cucumber.java.Before;
@@ -17,27 +21,35 @@ import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInC
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.testng.Assert.assertEquals;
 
-public class PostSkillStepDef extends TestBase{
+public class SkillPostStepDef {
 	
 	RequestSpecification requestSpec;
 	Response response;
 	String path;
 	Scenario scenario;
-	DataTable dataTable;
+	ExcelSheetReaderUtil excelSheetReaderUtil;
 	String sheetPost;
+	Properties properties;
+	Dbmanager dbmanager;
+
+	public SkillPostStepDef() {
+		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
+		properties = propUtil.loadProperties();
+		dbmanager = new Dbmanager();
+	}
 	
 	@Before
 	public void initializeDataTable(Scenario scenario) throws Exception {
 	this.scenario=scenario;
-	sheetPost=LoadProperties().getProperty("sheetPost");	  
-	dataTable =new DataTable("./src/test/resources/excel/testdata1.xls");
-	dataTable.createConnection(sheetPost);
+	sheetPost=properties.getProperty("sheetPost");
+	excelSheetReaderUtil =new ExcelSheetReaderUtil(properties.getProperty("skills.tdd.excelsheet.file.path"));
+	excelSheetReaderUtil.readSheet(sheetPost);
 	
 	}
 	
 	public void requestSpecificationPost() throws IOException {
 		requestSpec.header("Content-Type", "application/json");
-		String bodyExcel=dataTable.getDataFromExcel(scenario.getName(),"Body");
+		String bodyExcel=excelSheetReaderUtil.getDataFromExcel(scenario.getName(),"Body");
 		requestSpec.body(bodyExcel).log().body();
 		try {
 		assertThat(bodyExcel, matchesJsonSchemaInClasspath("skill-schema.json"));
@@ -51,10 +63,10 @@ public class PostSkillStepDef extends TestBase{
 	
 	@Given("User is on POST method with endpoint url Skills")
 	public void user_is_on_post_method_with_endpoint_url_skills() throws IOException {
-		RestAssured.baseURI=LoadProperties().getProperty("base_uri");
-		requestSpec=RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
-				    LoadProperties().getProperty("password"));
-		path=LoadProperties().getProperty("endpointPost");
+		RestAssured.baseURI=properties.getProperty("base_uri");
+		requestSpec=RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
+				    properties.getProperty("password"));
+		path=properties.getProperty("skills.endpoint.Post");
 		System.out.println("Path for Post is "+ path);
 	}
 
@@ -66,8 +78,8 @@ public class PostSkillStepDef extends TestBase{
 
 	@Then("User is able to create a new Skill id")
 	public void user_is_able_to_create_a_new_skill_id() throws IOException, SQLException {
-		String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
-		String responseMessage = dataTable.getDataFromExcel(scenario.getName(), "Message");
+		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
+		String responseMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 		String responseBody = response.asPrettyString();
 		System.out.println("Actual Response Status code=>  " + response.statusCode() + "  Expected Response Status code=>  " + expStatusCode);
 		System.out.println("Response Body is =>  " + responseBody);
@@ -78,7 +90,7 @@ public class PostSkillStepDef extends TestBase{
 		
 		JSONObject obj = new JSONObject(responseBody);
 		String skill_id= obj.get("skill_id").toString();
-		dbvalidation(responseBody, skill_id);
+		dbmanager.dbvalidation(responseBody, skill_id);
 	}
 
 	@When("User sends request with blank inputs")
@@ -103,8 +115,8 @@ public class PostSkillStepDef extends TestBase{
 	
 	@Then("User cannot create a new Skill id")
 	public void user_cannot_create_a_new_skill_id() throws IOException {
-		String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
-		String responseMessage = dataTable.getDataFromExcel(scenario.getName(), "Message");
+		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
+		String responseMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 		String responseBody = response.asPrettyString();
 		System.out.println("Actual Response Status code=>  " + response.statusCode() + "  Expected Response Status code=>  " + expStatusCode);
 		System.out.println("Response Body is =>  " + responseBody);

@@ -1,6 +1,9 @@
 package com.lms.api.stepdef.skillmap;
 import java.io.IOException;
+import java.util.Properties;
 
+import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.PropertiesReaderUtil;
 import org.testng.Assert;
 
 import io.cucumber.java.Before;
@@ -15,7 +18,7 @@ import io.restassured.specification.RequestSpecification;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class GetUserSkillMap extends BaseClass {
+public class UserSkillMapGetStepDef {
 	
 	
 	RequestSpecification RequestSpec;
@@ -23,8 +26,15 @@ public class GetUserSkillMap extends BaseClass {
 	String path;
 	String sheetGet;
 
-	DataTable dataTable;
+	ExcelSheetReaderUtil excelSheetReaderUtil;
 	Scenario scenario;
+
+	Properties properties;
+
+	public UserSkillMapGetStepDef() {
+		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
+		properties = propUtil.loadProperties();
+	}
 
 	// Before annotation from io cucumber
 	// Scenario class will give us information at the runtime like the scenario
@@ -32,9 +42,9 @@ public class GetUserSkillMap extends BaseClass {
 	@Before
 	public void initializeDataTable(Scenario scenario) throws Exception {
 		this.scenario = scenario;
-		sheetGet = LoadProperties().getProperty("sheetGet");
-		dataTable = new DataTable("src/test/resources/excel/data_UserSkillMap.xls");
-		dataTable.createConnection(sheetGet);
+		sheetGet = properties.getProperty("sheetGet");
+		excelSheetReaderUtil = new ExcelSheetReaderUtil("src/test/resources/excel/data_UserSkillMap.xls");
+		excelSheetReaderUtil.readSheet(sheetGet);
 
 	}
 	
@@ -42,10 +52,10 @@ public class GetUserSkillMap extends BaseClass {
 @Given("User is on GETall Method")
 public void user_is_on_getall_method() throws IOException{
 	
-	RestAssured.baseURI = LoadProperties().getProperty("base_uri");
+	RestAssured.baseURI = properties.getProperty("base_uri");
 
-	RequestSpec = RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
-			LoadProperties().getProperty("password"));
+	RequestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
+			properties.getProperty("password"));
 	// RequestSpec = RestAssured.given().auth().preemptive().basic("username","password");
 
 	path = "/UserSkills";
@@ -66,7 +76,7 @@ public void user_sends_request() {
 public void user_receives_status_code_with_valid_json_schemaforall() throws IOException {
 	
 	String responseBody = response.prettyPrint();
-	String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
+	String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 	System.out.println("Expected response code: " + expStatusCode);
 	System.out.println("Response Status code is =>  " + response.statusCode());
 	int statuscode = response.statusCode();
@@ -81,10 +91,10 @@ public void user_receives_status_code_with_valid_json_schemaforall() throws IOEx
 @Given("User is on GET Methods")
 public void user_is_on_get_methods() throws IOException{
 	
-	RestAssured.baseURI = LoadProperties().getProperty("base_uri");
+	RestAssured.baseURI = properties.getProperty("base_uri");
 
-	RequestSpec = RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
-			LoadProperties().getProperty("password"));
+	RequestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
+			properties.getProperty("password"));
 	// RequestSpec = RestAssured.given().auth().preemptive().basic("username","password");
 
 	path = "/UserSkills/";
@@ -103,7 +113,7 @@ public void user_sends_request_with_valid_id() throws IOException {
 public void user_receives_status_code_with_valid_json_schemas() throws IOException {
 	
 	String responseBody = response.prettyPrint();
-	String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
+	String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 	System.out.println("Expected response code: " + expStatusCode);
 	System.out.println("Response Status code is =>  " + response.statusCode());
 	int statuscode = response.statusCode();
@@ -124,8 +134,8 @@ public void user_sends_request_with_invalid_id() throws IOException {
 @Then("User gets Response as Bad Request")
 public void user_gets_response_as_bad_request() throws IOException {
 	
-	String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
-	String expMessage = dataTable.getDataFromExcel(scenario.getName(), "Message");
+	String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
+	String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 	System.out.println("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
 	
     System.out.println("Response Status code is =>  " + response.statusCode());
@@ -161,7 +171,7 @@ public void user_sends_request_with_decimal_as_id()throws IOException {
 
 public void requestSpecificationGET() throws IOException {
 	
-String UserSkillsId = dataTable.getDataFromExcel(scenario.getName(), "UserSkills");
+String UserSkillsId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserSkills");
 	
 	//response = RequestSpec.get(path);
     RequestSpec.log().all();
@@ -172,10 +182,10 @@ String UserSkillsId = dataTable.getDataFromExcel(scenario.getName(), "UserSkills
 @Given("User  sets GET request with a valid endpoint as url\\/UserSkillsMap")
 public void user_sets_get_request_with_a_valid_endpoint_as_url_user_skills_map() {
 	
-	RestAssured.baseURI = LoadProperties().getProperty("base_uri");
+	RestAssured.baseURI = properties.getProperty("base_uri");
 
-	RequestSpec = RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
-			LoadProperties().getProperty("password"));
+	RequestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
+			properties.getProperty("password"));
 	// RequestSpec = RestAssured.given().auth().preemptive().basic("username","password");
 
 	path = "/UserSkillsMap";  
@@ -186,7 +196,7 @@ public void user_sets_get_request_with_a_valid_endpoint_as_url_user_skills_map()
 public void user_receives_status_code_with_valid_json_schemaforall_skills() throws IOException {
    
 	String responseBody = response.prettyPrint();
-	String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
+	String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 	System.out.println("Expected response code: " + expStatusCode);
 	System.out.println("Response Status code is =>  " + response.statusCode());
 

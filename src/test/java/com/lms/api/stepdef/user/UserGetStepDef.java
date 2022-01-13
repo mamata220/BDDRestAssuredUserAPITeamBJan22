@@ -5,7 +5,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Properties;
 
+import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.PropertiesReaderUtil;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
@@ -16,7 +19,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-public class UserGetStepDef extends TestBase {
+public class UserGetStepDef {
 
 	RequestSpecification RequestSpec;
 	Response response;
@@ -24,15 +27,22 @@ public class UserGetStepDef extends TestBase {
 	String path;
 	String sheetGet;
 
-	DataTable dataTable;
+	ExcelSheetReaderUtil excelSheetReaderUtil;
 	Scenario scenario;
+	Properties properties;
+
+	public UserGetStepDef() {
+		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
+		properties = propUtil.loadProperties();
+	}
 
 	@Before
 	public void initializeDataTable(Scenario scenario) throws Exception {
 		this.scenario = scenario;
-		sheetGet = loadProperties().getProperty("sheetGet");
-		dataTable = new DataTable("src/test/resources/excel/data.xls");
-		dataTable.createConnection(sheetGet);
+		sheetGet = properties.getProperty("sheetGet");
+//		excelSheetReaderUtil = new ExcelSheetReaderUtil("src/test/resources/excel/data.xls");
+		excelSheetReaderUtil = new ExcelSheetReaderUtil(properties.getProperty("userapi.tdd.excelsheet.file.path"));
+		excelSheetReaderUtil.readSheet(sheetGet);
 
 	}
 
@@ -41,26 +51,26 @@ public class UserGetStepDef extends TestBase {
 
 	@Given("User is on Get Method with end point")
 	public void user_is_on_get_method_with_end_point() throws IOException {
-		RestAssured.baseURI = loadProperties().getProperty("base_uri");
-		String ex_username = dataTable.getDataFromExcel(scenario.getName(), "Username");
-		String ex_password = dataTable.getDataFromExcel(scenario.getName(), "Password");
+		RestAssured.baseURI = properties.getProperty("base_uri");
+		String ex_username = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Username");
+		String ex_password = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Password");
 
 		RequestSpec = RestAssured.given().auth().preemptive().basic(ex_username, ex_password);
-		path = loadProperties().getProperty("endpoint");
+		path = properties.getProperty("endpoint");
 
 	}
 
 	@Given("User is on Get Method with end point and no authentication")
 	public void user_is_on_get_method_with_end_point_and_no_authentication() {
-		RestAssured.baseURI = loadProperties().getProperty("base_uri");
+		RestAssured.baseURI = properties.getProperty("base_uri");
 		RequestSpec = RestAssured.given();
-		path = loadProperties().getProperty("endpoint");
+		path = properties.getProperty("endpoint");
 	}
 
 	@Then("User should receive error status code for get")
 	public void user_should_receive_error_status_code_for_get() {
 		String responseBody = response.prettyPrint();
-		assertEquals(Integer.parseInt(loadProperties().getProperty("invStatusCode")), response.statusCode());
+		assertEquals(Integer.parseInt(properties.getProperty("invStatusCode")), response.statusCode());
 
 		System.out.println("Response Status code is =>  " + response.statusCode());
 		System.out.println("Response Body is => " + responseBody);
@@ -74,7 +84,7 @@ public class UserGetStepDef extends TestBase {
 	@Then("User should receive error status code for auth")
 	public void user_should_receive_error_status_code_for_auth() {
 		String responseBody = response.prettyPrint();
-		assertEquals(Integer.parseInt(loadProperties().getProperty("authStatusCode")), response.statusCode());
+		assertEquals(Integer.parseInt(properties.getProperty("authStatusCode")), response.statusCode());
 
 		System.out.println("Response Status code is =>  " + response.statusCode());
 		System.out.println("Response Body is => " + responseBody);
@@ -92,7 +102,7 @@ public class UserGetStepDef extends TestBase {
 
 	@Then("User should receive status code and message for get")
 	public void user_should_receive_status_code_and_message_for_get() throws Exception {
-		String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
+		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseBody = response.prettyPrint();
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 
@@ -103,7 +113,7 @@ public class UserGetStepDef extends TestBase {
 
 	@Then("User should receive error status code and message for get")
 	public void user_should_receive_error_status_code_and_message_for_get() throws Exception {
-		String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
+		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 
 		int code = response.getStatusCode();
 		String responseBody = response.prettyPrint();
@@ -120,21 +130,21 @@ public class UserGetStepDef extends TestBase {
 
 	@Given("User is on Get Method with end point for single user")
 	public void user_is_on_get_method_with_end_point_for_single_user() throws IOException {
-		RestAssured.baseURI = loadProperties().getProperty("base_uri");
-		String ex_username = dataTable.getDataFromExcel(scenario.getName(), "Username");
-		String ex_password = dataTable.getDataFromExcel(scenario.getName(), "Password");
+		RestAssured.baseURI = properties.getProperty("base_uri");
+		String ex_username = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Username");
+		String ex_password = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Password");
 
 		RequestSpec = RestAssured.given().auth().preemptive().basic(ex_username, ex_password);
-		String userId = dataTable.getDataFromExcel(scenario.getName(), "UserId");
+		String userId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserId");
 
 		if (userId.equalsIgnoreCase("000")) {
 			int invUserid = Integer.parseInt(userId);
-			path = loadProperties().getProperty("endpointGet") + invUserid;
+			path = properties.getProperty("endpointGet") + invUserid;
 		} else if (userId.equalsIgnoreCase("1.23")) {
 			float invid = Float.parseFloat(userId);
-			path = loadProperties().getProperty("endpointGet") + invid;
+			path = properties.getProperty("endpointGet") + invid;
 		} else
-			path = loadProperties().getProperty("endpointGet") + userId;
+			path = properties.getProperty("endpointGet") + userId;
 
 	}
 
@@ -146,7 +156,7 @@ public class UserGetStepDef extends TestBase {
 
 	@Then("User should receive status code and message for specific user")
 	public void user_should_receive_status_code_and_message_for_specific_user() throws Exception {
-		String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
+		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseBody = response.prettyPrint();
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 
@@ -168,10 +178,10 @@ public class UserGetStepDef extends TestBase {
 
 	@Given("User is on Get Method with end point with userID as blank")
 	public void user_is_on_get_method_with_end_point_with_user_id_as_blank() {
-		RestAssured.baseURI = loadProperties().getProperty("base_uri");
-		RequestSpec = RestAssured.given().auth().preemptive().basic(loadProperties().getProperty("username"),
-				loadProperties().getProperty("password"));
-		path = loadProperties().getProperty("endpointGet");
+		RestAssured.baseURI = properties.getProperty("base_uri");
+		RequestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
+				properties.getProperty("password"));
+		path = properties.getProperty("endpointGet");
 	}
 
 	@When("User sends request with a blank userId")

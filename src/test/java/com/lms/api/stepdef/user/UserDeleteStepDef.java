@@ -3,7 +3,10 @@ package com.lms.api.stepdef.user;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Properties;
 
+import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.PropertiesReaderUtil;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
@@ -14,7 +17,7 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-public class UserDeleteStepDef extends TestBase{
+public class UserDeleteStepDef {
 	
 	RequestSpecification RequestSpec;
 	Response response;
@@ -22,16 +25,24 @@ public class UserDeleteStepDef extends TestBase{
 	String path;
 	String sheetDelete;
 
-	DataTable dataTable;
+	ExcelSheetReaderUtil excelSheetReaderUtil;
 	Scenario scenario;
+
+	Properties properties;
+
+	public UserDeleteStepDef() {
+		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
+		properties = propUtil.loadProperties();
+	}
 
 	@Before
 	public void initializeDataTable(Scenario scenario) throws Exception {
+
 		this.scenario = scenario;
-		sheetDelete = loadProperties().getProperty("sheetDelete");
+		sheetDelete = properties.getProperty("sheetDelete");
 		// System.out.println(sheetPost);
-		dataTable = new DataTable("src/test/resources/excel/data.xls");
-		dataTable.createConnection(sheetDelete);
+		excelSheetReaderUtil = new ExcelSheetReaderUtil(properties.getProperty("userapi.tdd.excelsheet.file.path"));
+		excelSheetReaderUtil.readSheet(sheetDelete);
 	}
 	
 	public void requestSpecificationDelete() {
@@ -46,13 +57,13 @@ public class UserDeleteStepDef extends TestBase{
 	
 	@Given("User is on Delete Method with endpoint")
 	public void user_is_on_delete_method_with_endpoint() throws IOException {
-		RestAssured.baseURI = loadProperties().getProperty("base_uri");
-		RequestSpec = RestAssured.given().auth().preemptive().basic(loadProperties().getProperty("username"),
-				loadProperties().getProperty("password"));
+		RestAssured.baseURI = properties.getProperty("base_uri");
+		RequestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
+				properties.getProperty("password"));
 
-		String userId = dataTable.getDataFromExcel(scenario.getName(), "UserId");
+		String userId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserId");
 		System.out.println("UserId is : " + userId);
-		path = loadProperties().getProperty("endpointDelete") + userId;
+		path = properties.getProperty("endpointDelete") + userId;
 		System.out.println("Path for Delete is: " + path);
 	}
 	
@@ -79,8 +90,8 @@ public class UserDeleteStepDef extends TestBase{
 	
 	@Then("User should receive status code and message for delete")
 	public void user_should_receive_status_code_and_message_for_delete() throws Exception {
-		String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
-		String expMessage = dataTable.getDataFromExcel(scenario.getName(), "Message");
+		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
+		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 		//System.out.println("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
 
 		String responseBody = response.prettyPrint();
@@ -96,11 +107,11 @@ public class UserDeleteStepDef extends TestBase{
 	
 	@Given("User is on Delete Method with endpoint without userid as parameter")
 	public void user_is_on_delete_method_with_endpoint_without_userid_as_parameter() {
-		RestAssured.baseURI = loadProperties().getProperty("base_uri");
-		RequestSpec = RestAssured.given().auth().preemptive().basic(loadProperties().getProperty("username"),
-				loadProperties().getProperty("password"));
+		RestAssured.baseURI = properties.getProperty("base_uri");
+		RequestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
+				properties.getProperty("password"));
 
-		path = loadProperties().getProperty("endpointDelete");
+		path = properties.getProperty("endpointDelete");
 		
 	}
 	

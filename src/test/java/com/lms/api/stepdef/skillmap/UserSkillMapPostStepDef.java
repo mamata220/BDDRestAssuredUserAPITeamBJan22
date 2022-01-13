@@ -1,6 +1,9 @@
 package com.lms.api.stepdef.skillmap;
 import java.io.IOException;
+import java.util.Properties;
 
+import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.PropertiesReaderUtil;
 import org.testng.Assert;
 
 import io.cucumber.java.Before;
@@ -15,7 +18,7 @@ import io.restassured.specification.RequestSpecification;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class PostUserSkillMap extends BaseClass {
+public class UserSkillMapPostStepDef {
 
 	RequestSpecification RequestSpec;
 	Response response;
@@ -23,10 +26,17 @@ public class PostUserSkillMap extends BaseClass {
 	String path;
 	String sheetPost;
 
-	DataTable dataTable;
+	ExcelSheetReaderUtil excelSheetReaderUtil;
 	Scenario scenario;
 	
 	String bodyExcel;
+
+	Properties properties;
+
+	public UserSkillMapPostStepDef() {
+		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
+		properties = propUtil.loadProperties();
+	}
 
 	// Before annotation from io cucumber
 	// Scenario class will give us information at the runtime like the scenario
@@ -34,19 +44,19 @@ public class PostUserSkillMap extends BaseClass {
 	@Before
 	public void initializeDataTable(Scenario scenario) throws Exception {
 		this.scenario = scenario;
-		sheetPost = LoadProperties().getProperty("sheetPost");
-		dataTable = new DataTable("src/test/resources/excel/data_UserSkillMap.xls");
-		dataTable.createConnection(sheetPost);
+		sheetPost = properties.getProperty("sheetPost");
+		excelSheetReaderUtil = new ExcelSheetReaderUtil("src/test/resources/excel/data_UserSkillMap.xls");
+		excelSheetReaderUtil.readSheet(sheetPost);
 
 	}
 
 	@Given("User is on Post Method with endpoint url\\UserSkills with valid JSON schema")
 	public void user_is_on_post_method_with_endpoint_url_user_skills_with_valid_json_schema() throws IOException{
 		
-		RestAssured.baseURI = LoadProperties().getProperty("base_uri");
+		RestAssured.baseURI = properties.getProperty("base_uri");
 
-		RequestSpec = RestAssured.given().auth().preemptive().basic(LoadProperties().getProperty("username"),
-				LoadProperties().getProperty("password"));
+		RequestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
+				properties.getProperty("password"));
 		// RequestSpec = RestAssured.given().auth().preemptive().basic("username","password");
 
 		path = "/SkillsMap";
@@ -123,7 +133,7 @@ public class PostUserSkillMap extends BaseClass {
 	
 	public void requestSpecificationPOST() throws IOException {
 		
-		bodyExcel = dataTable.getDataFromExcel(scenario.getName(), "Body");
+		bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		RequestSpec.header("Content-Type", "application/json");
 		RequestSpec.body(bodyExcel).log().all();
 
@@ -140,7 +150,7 @@ public class PostUserSkillMap extends BaseClass {
 	
 	private void requestSpecificationPOSTWhenExceptionExpected() throws IOException {
 		
-		bodyExcel = dataTable.getDataFromExcel(scenario.getName(), "Body");
+		bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		RequestSpec.header("Content-Type", "application/json");
 		RequestSpec.body(bodyExcel).log().all();
 
@@ -163,8 +173,8 @@ public class PostUserSkillMap extends BaseClass {
 	
 	public void thenMethodSpecificationPOST() throws IOException {
 		
-		String expStatusCode = dataTable.getDataFromExcel(scenario.getName(), "StatusCode");
-		String expMessage = dataTable.getDataFromExcel(scenario.getName(), "Message");
+		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
+		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 		System.out.println("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
 		
 	    System.out.println("Response Status code is =>  " + response.statusCode());
