@@ -2,7 +2,7 @@ package com.lms.api.stepdef.skillmap;
 import java.io.IOException;
 import java.util.Properties;
 
-import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.ExcelReaderUtil;
 import com.lms.api.utilities.PropertiesReaderUtil;
 import org.testng.Assert;
 
@@ -26,7 +26,7 @@ public class UserSkillMapDeleteStepDef {
 	String path;
 	String sheetDelete;
 
-	ExcelSheetReaderUtil excelSheetReaderUtil;
+	ExcelReaderUtil excelSheetReaderUtil;
 	Scenario scenario;
 
 	Properties properties;
@@ -43,7 +43,7 @@ public class UserSkillMapDeleteStepDef {
 	public void initializeDataTable(Scenario scenario) throws Exception {
 		this.scenario = scenario;
 		sheetDelete = properties.getProperty("sheetDelete");
-		excelSheetReaderUtil = new ExcelSheetReaderUtil("src/test/resources/excel/data_UserSkillMap.xls");
+		excelSheetReaderUtil = new ExcelReaderUtil("src/test/resources/excel/data_UserSkillMap.xls");
 		excelSheetReaderUtil.readSheet(sheetDelete);
 
 	}
@@ -59,7 +59,8 @@ public class UserSkillMapDeleteStepDef {
 				properties.getProperty("password"));
 		// RequestSpec = RestAssured.given().auth().preemptive().basic("username","password");
 
-		path = "/UserSkills/";
+		//path = "/UserSkills/";
+		path = properties.getProperty("/UserSkills/");
 		
 	
 	}

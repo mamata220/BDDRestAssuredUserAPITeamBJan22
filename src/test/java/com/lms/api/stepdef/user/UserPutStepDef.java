@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.Properties;
 
-import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.ExcelReaderUtil;
 import com.lms.api.utilities.PropertiesReaderUtil;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
@@ -27,7 +27,7 @@ public class UserPutStepDef {
 	String path;
 	String sheetPut;
 
-	ExcelSheetReaderUtil excelSheetReaderUtil;
+	ExcelReaderUtil excelSheetReaderUtil;
 	Scenario scenario;
 	Properties properties;
 
@@ -41,7 +41,7 @@ public class UserPutStepDef {
 		this.scenario = scenario;
 		sheetPut = properties.getProperty("sheetPut");
 		// System.out.println(sheetPost);
-		excelSheetReaderUtil = new ExcelSheetReaderUtil(properties.getProperty("userapi.tdd.excelsheet.file.path"));
+		excelSheetReaderUtil = new ExcelReaderUtil(properties.getProperty("userapi.excel.path"));
 		excelSheetReaderUtil.readSheet(sheetPut);
 
 	}
@@ -50,10 +50,15 @@ public class UserPutStepDef {
 		RequestSpec.header("Content-Type", "application/json");
 		RequestSpec.body(pbodyExcel).log().all();
 
+		System.out.println("requestSpecification -- before assertThat matchesJsonSchemaInClasspath ");
 		// Validation of requestBody with User schema
-		assertThat(pbodyExcel, matchesJsonSchemaInClasspath("before_put_schema.json"));
-		// System.out.println(path);
+	//	assertThat(pbodyExcel, matchesJsonSchemaInClasspath("before_put_schema.json"));
+		System.out.println("requestSpecification -- after assertThat matchesJsonSchemaInClasspath ");
+		System.out.println("requestSpecification -- Before api call to backend");
 		response = RequestSpec.when().put(path);
+
+		//matchesJsonSchemaInClasspath should go here
+		System.out.println("requestSpecification -- after api call to backend");
 	}
 
 	@Given("^User is on Put Method with endpoint")
@@ -95,9 +100,9 @@ public class UserPutStepDef {
 	/*
 	 * @Then("Validate response for status code and message for put") public void
 	 * validate_response_for_status_code_and_message_for_put() throws IOException {
-	 * String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(),
+	 * String expStatusCode = excelReaderUtil.getDataFromExcel(scenario.getName(),
 	 * "StatusCode"); String expMessage =
-	 * excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
+	 * excelReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 	 * System.out.println("Expected response code: " + expStatusCode +
 	 * "Expected message is: " + expMessage);
 	 * 

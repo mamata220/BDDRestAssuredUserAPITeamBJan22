@@ -12,7 +12,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 /**
  * This class is a utility class and is used to Read Excel sheet
  */
-public class ExcelSheetReaderUtil {
+public class ExcelReaderUtil {
 
     String path;
     FileInputStream fis;
@@ -20,7 +20,7 @@ public class ExcelSheetReaderUtil {
     Sheet sheet;
     Row row;
 
-    public ExcelSheetReaderUtil(String path) {
+    public ExcelReaderUtil(String path) {
         super();
         this.path = path;
     }

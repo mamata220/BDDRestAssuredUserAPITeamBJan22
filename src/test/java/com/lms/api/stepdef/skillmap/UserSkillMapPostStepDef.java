@@ -2,7 +2,7 @@ package com.lms.api.stepdef.skillmap;
 import java.io.IOException;
 import java.util.Properties;
 
-import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.ExcelReaderUtil;
 import com.lms.api.utilities.PropertiesReaderUtil;
 import org.testng.Assert;
 
@@ -26,7 +26,7 @@ public class UserSkillMapPostStepDef {
 	String path;
 	String sheetPost;
 
-	ExcelSheetReaderUtil excelSheetReaderUtil;
+	ExcelReaderUtil excelSheetReaderUtil;
 	Scenario scenario;
 	
 	String bodyExcel;
@@ -45,7 +45,7 @@ public class UserSkillMapPostStepDef {
 	public void initializeDataTable(Scenario scenario) throws Exception {
 		this.scenario = scenario;
 		sheetPost = properties.getProperty("sheetPost");
-		excelSheetReaderUtil = new ExcelSheetReaderUtil("src/test/resources/excel/data_UserSkillMap.xls");
+		excelSheetReaderUtil = new ExcelReaderUtil("src/test/resources/excel/data_UserSkillMap.xls");
 		excelSheetReaderUtil.readSheet(sheetPost);
 
 	}
@@ -59,7 +59,10 @@ public class UserSkillMapPostStepDef {
 				properties.getProperty("password"));
 		// RequestSpec = RestAssured.given().auth().preemptive().basic("username","password");
 
-		path = "/SkillsMap";
+
+
+		//path = "skillmap.endpoint.post";
+		path = properties.getProperty("skillmap.endpoint.post");
 
 		// response = RequestSpec.given().when().get(path);
 		// System.out.println(response.asString());

@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.Properties;
 
-import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.ExcelReaderUtil;
 import com.lms.api.utilities.PropertiesReaderUtil;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
@@ -27,7 +27,7 @@ public class UserGetStepDef {
 	String path;
 	String sheetGet;
 
-	ExcelSheetReaderUtil excelSheetReaderUtil;
+	ExcelReaderUtil excelReaderUtil;
 	Scenario scenario;
 	Properties properties;
 
@@ -40,9 +40,9 @@ public class UserGetStepDef {
 	public void initializeDataTable(Scenario scenario) throws Exception {
 		this.scenario = scenario;
 		sheetGet = properties.getProperty("sheetGet");
-//		excelSheetReaderUtil = new ExcelSheetReaderUtil("src/test/resources/excel/data.xls");
-		excelSheetReaderUtil = new ExcelSheetReaderUtil(properties.getProperty("userapi.tdd.excelsheet.file.path"));
-		excelSheetReaderUtil.readSheet(sheetGet);
+//		excelReaderUtil = new ExcelReaderUtil("src/test/resources/excel/data.xls");
+		excelReaderUtil = new ExcelReaderUtil(properties.getProperty("userapi.excel.path"));
+		excelReaderUtil.readSheet(sheetGet);
 
 	}
 
@@ -52,8 +52,8 @@ public class UserGetStepDef {
 	@Given("User is on Get Method with end point")
 	public void user_is_on_get_method_with_end_point() throws IOException {
 		RestAssured.baseURI = properties.getProperty("base_uri");
-		String ex_username = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Username");
-		String ex_password = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Password");
+		String ex_username = excelReaderUtil.getDataFromExcel(scenario.getName(), "Username");
+		String ex_password = excelReaderUtil.getDataFromExcel(scenario.getName(), "Password");
 
 		RequestSpec = RestAssured.given().auth().preemptive().basic(ex_username, ex_password);
 		path = properties.getProperty("endpoint");
@@ -102,7 +102,7 @@ public class UserGetStepDef {
 
 	@Then("User should receive status code and message for get")
 	public void user_should_receive_status_code_and_message_for_get() throws Exception {
-		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
+		String expStatusCode = excelReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseBody = response.prettyPrint();
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 
@@ -113,7 +113,7 @@ public class UserGetStepDef {
 
 	@Then("User should receive error status code and message for get")
 	public void user_should_receive_error_status_code_and_message_for_get() throws Exception {
-		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
+		String expStatusCode = excelReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 
 		int code = response.getStatusCode();
 		String responseBody = response.prettyPrint();
@@ -131,11 +131,11 @@ public class UserGetStepDef {
 	@Given("User is on Get Method with end point for single user")
 	public void user_is_on_get_method_with_end_point_for_single_user() throws IOException {
 		RestAssured.baseURI = properties.getProperty("base_uri");
-		String ex_username = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Username");
-		String ex_password = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Password");
+		String ex_username = excelReaderUtil.getDataFromExcel(scenario.getName(), "Username");
+		String ex_password = excelReaderUtil.getDataFromExcel(scenario.getName(), "Password");
 
 		RequestSpec = RestAssured.given().auth().preemptive().basic(ex_username, ex_password);
-		String userId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserId");
+		String userId = excelReaderUtil.getDataFromExcel(scenario.getName(), "UserId");
 
 		if (userId.equalsIgnoreCase("000")) {
 			int invUserid = Integer.parseInt(userId);
@@ -156,7 +156,7 @@ public class UserGetStepDef {
 
 	@Then("User should receive status code and message for specific user")
 	public void user_should_receive_status_code_and_message_for_specific_user() throws Exception {
-		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
+		String expStatusCode = excelReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseBody = response.prettyPrint();
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 

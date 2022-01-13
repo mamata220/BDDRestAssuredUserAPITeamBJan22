@@ -1,7 +1,7 @@
 package com.lms.api.stepdef.skills;
 
 import com.lms.api.dbmanager.Dbmanager;
-import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.ExcelReaderUtil;
 import com.lms.api.utilities.PropertiesReaderUtil;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
@@ -28,7 +28,7 @@ public class SkillPutStepDef {
 	String path;
 	
 	Scenario scenario;
-	ExcelSheetReaderUtil excelSheetReaderUtil;
+	ExcelReaderUtil excelSheetReaderUtil;
 	Properties properties;
 	Dbmanager dbmanager;
 
@@ -44,7 +44,7 @@ public class SkillPutStepDef {
 	public void initializeDataTable(Scenario scenario) throws Exception {
 	this.scenario=scenario;
 	sheetPut=properties.getProperty("sheetPut");
-	excelSheetReaderUtil =new ExcelSheetReaderUtil(properties.getProperty("skills.tdd.excelsheet.file.path"));
+	excelSheetReaderUtil =new ExcelReaderUtil(properties.getProperty("skills.excel.path"));
 	excelSheetReaderUtil.readSheet(sheetPut);
 	
 	}

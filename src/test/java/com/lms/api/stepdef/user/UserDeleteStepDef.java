@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.Properties;
 
-import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.ExcelReaderUtil;
 import com.lms.api.utilities.PropertiesReaderUtil;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
@@ -25,7 +25,7 @@ public class UserDeleteStepDef {
 	String path;
 	String sheetDelete;
 
-	ExcelSheetReaderUtil excelSheetReaderUtil;
+	ExcelReaderUtil excelSheetReaderUtil;
 	Scenario scenario;
 
 	Properties properties;
@@ -41,7 +41,7 @@ public class UserDeleteStepDef {
 		this.scenario = scenario;
 		sheetDelete = properties.getProperty("sheetDelete");
 		// System.out.println(sheetPost);
-		excelSheetReaderUtil = new ExcelSheetReaderUtil(properties.getProperty("userapi.tdd.excelsheet.file.path"));
+		excelSheetReaderUtil = new ExcelReaderUtil(properties.getProperty("userapi.excel.path"));
 		excelSheetReaderUtil.readSheet(sheetDelete);
 	}
 	

@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import com.lms.api.dbmanager.Dbmanager;
-import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.ExcelReaderUtil;
 import com.lms.api.utilities.PropertiesReaderUtil;
 import org.json.JSONObject;
 
@@ -27,7 +27,7 @@ public class SkillPostStepDef {
 	Response response;
 	String path;
 	Scenario scenario;
-	ExcelSheetReaderUtil excelSheetReaderUtil;
+	ExcelReaderUtil excelSheetReaderUtil;
 	String sheetPost;
 	Properties properties;
 	Dbmanager dbmanager;
@@ -42,7 +42,7 @@ public class SkillPostStepDef {
 	public void initializeDataTable(Scenario scenario) throws Exception {
 	this.scenario=scenario;
 	sheetPost=properties.getProperty("sheetPost");
-	excelSheetReaderUtil =new ExcelSheetReaderUtil(properties.getProperty("skills.tdd.excelsheet.file.path"));
+	excelSheetReaderUtil =new ExcelReaderUtil(properties.getProperty("skills.excel.path"));
 	excelSheetReaderUtil.readSheet(sheetPost);
 	
 	}

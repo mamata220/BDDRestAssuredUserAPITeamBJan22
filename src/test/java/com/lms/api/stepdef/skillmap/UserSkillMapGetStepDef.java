@@ -2,7 +2,7 @@ package com.lms.api.stepdef.skillmap;
 import java.io.IOException;
 import java.util.Properties;
 
-import com.lms.api.utilities.ExcelSheetReaderUtil;
+import com.lms.api.utilities.ExcelReaderUtil;
 import com.lms.api.utilities.PropertiesReaderUtil;
 import org.testng.Assert;
 
@@ -26,7 +26,7 @@ public class UserSkillMapGetStepDef {
 	String path;
 	String sheetGet;
 
-	ExcelSheetReaderUtil excelSheetReaderUtil;
+	ExcelReaderUtil excelSheetReaderUtil;
 	Scenario scenario;
 
 	Properties properties;
@@ -43,7 +43,7 @@ public class UserSkillMapGetStepDef {
 	public void initializeDataTable(Scenario scenario) throws Exception {
 		this.scenario = scenario;
 		sheetGet = properties.getProperty("sheetGet");
-		excelSheetReaderUtil = new ExcelSheetReaderUtil("src/test/resources/excel/data_UserSkillMap.xls");
+		excelSheetReaderUtil = new ExcelReaderUtil("src/test/resources/excel/data_UserSkillMap.xls");
 		excelSheetReaderUtil.readSheet(sheetGet);
 
 	}
@@ -97,7 +97,8 @@ public void user_is_on_get_methods() throws IOException{
 			properties.getProperty("password"));
 	// RequestSpec = RestAssured.given().auth().preemptive().basic("username","password");
 
-	path = "/UserSkills/";
+	//path = "/UserSkills/";
+	path = properties.getProperty("skillmap.endpoint.get");
 	
    
 }
@@ -188,7 +189,8 @@ public void user_sets_get_request_with_a_valid_endpoint_as_url_user_skills_map()
 			properties.getProperty("password"));
 	// RequestSpec = RestAssured.given().auth().preemptive().basic("username","password");
 
-	path = "/UserSkillsMap";  
+	//path = "/UserSkillsMap";
+	path = properties.getProperty("/UserSkillsMap");
    
 }
 
