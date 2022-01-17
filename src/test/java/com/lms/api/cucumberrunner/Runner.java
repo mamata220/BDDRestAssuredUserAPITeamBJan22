@@ -4,12 +4,13 @@ import org.junit.runner.RunWith;
 
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
+import io.cucumber.testng.AbstractTestNGCucumberTests;
 
 /**
  * Main Runner class to run all cucumber feature files
  *
  */
-@RunWith(Cucumber.class)
+//@RunWith(Cucumber.class)
 @CucumberOptions(features = "src/test/resources/features/",
 					 glue = {"com/lms/api/stepdef/user", "com/lms/api/stepdef/skillmap", "com/lms/api/stepdef/skills"},
 					// tags = "@blank",
@@ -18,6 +19,6 @@ dryRun = false,
 plugin = {"pretty","com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"}
 
 )
-public class Runner {
+public class Runner extends AbstractTestNGCucumberTests {
 
 }
